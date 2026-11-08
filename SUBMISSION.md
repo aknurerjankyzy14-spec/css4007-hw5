@@ -270,7 +270,43 @@ with their required resets must still be run separately.
 
 ## Part 4 — Running and checking my work
 
-TODO: point to the README setup steps, package versions, memory-reset instructions, tests and GitHub Actions workflow. Explain which mistake each test catches and which runs use a fake model.
+I use Python 3.13.2.
+The installed package versions are pinned in requirements.txt.
+
+Run the tests with:
+
+python -m pytest -q
+
+Actual local result: 15 passed in 5.72 seconds.
+
+The tests check:
+- Original routing, including case-insensitive matching.
+- The separate clarification path for messages with both topics.
+- Instruction retrieval and service-status profiles.
+- Mapping password recovery to account_recovery.
+- Saving local drafts and rejecting missing ticket details.
+- Ending the graph when the model requests no tools.
+- Stopping repeated tool calls at the loop limit.
+- Restoring conversation and user memory in a separate process.
+- Keeping users and conversation threads separate.
+
+FakeModel and AlwaysToolsModel are explicitly labelled test models.
+The restart test also substitutes a fake model.
+These tests make no OpenAI API requests.
+Real model demonstrations are saved separately in outputs/.
+
+The GitHub Actions workflow is .github/workflows/tests.yml.
+It is configured to install dependencies and run the tests on pushes
+and pull requests. Its remote result still needs to be checked.
+
+Memory is stored in local-storage/conversations.sqlite and
+local-storage/users.sqlite by default.
+To reset all conversation and user memory, stop the application
+and delete these two database files.
+Do not delete data/ or the saved demonstration logs.
+
+The README setup and demonstration instructions still need
+to be completed.
 
 ## Choices and limitations
 
