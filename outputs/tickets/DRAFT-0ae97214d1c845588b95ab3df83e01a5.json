@@ -1,0 +1,15 @@
+{
+  "ticket_id": "DRAFT-0ae97214d1c845588b95ab3df83e01a5",
+  "status": "draft",
+  "user_id": "demo-user-a",
+  "thread_id": "part2-missing",
+  "category": "wifi",
+  "summary": "Wi-Fi enabled but still fails to connect.",
+  "steps_tried": [
+    "Enabled Wi-Fi",
+    "Tried reconnecting"
+  ],
+  "service_status": "operational",
+  "status_profile": "normal",
+  "reference_ids": []
+}
