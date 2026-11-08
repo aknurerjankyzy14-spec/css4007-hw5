@@ -82,7 +82,43 @@ The password rule is checked only if the Wi-Fi rule does not match.
 
 ### My change to the graph
 
-TODO: draw the graph with clarify_problem, show the new trace, and explain the difference. What does LangGraph control, and what do my functions decide?
+The changed graph includes a separate clarification node:
+
+```mermaid
+flowchart TD
+    START --> read_request
+    read_request -->|Wi-Fi only| wifi_help
+    read_request -->|Password only| password_help
+    read_request -->|Both topics| clarify_problem
+    read_request -->|Other| other_help
+    wifi_help --> END
+    password_help --> END
+    clarify_problem --> END
+    other_help --> END
+```
+
+I added a check for both topics before the individual topic checks.
+
+Actual S05 trace:
+
+1. read_request received "My Wi-Fi password does not work."
+   It changed category from "" to "both".
+   The original message stayed unchanged, and reply was still empty.
+2. clarify_problem set reply to:
+   "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?"
+
+Actual route: START → read_request → clarify_problem → END.
+
+The full trace is saved in outputs/S05_part1.json.
+
+Before the change, S04 selected wifi_help because the Wi-Fi rule was checked first.
+After the change, S05 selected clarify_problem because both topics were detected.
+The execution path changed, not only the final answer.
+
+LangGraph manages state updates and execution through the graph's nodes and edges.
+My Python functions define the keyword checks, select the category,
+choose the next node and create the reply.
+No language model is used in Part 1.
 
 ## Part 2 — Model and tools
 
@@ -111,11 +147,11 @@ TODO: explain the storage and libraries I chose, why they fit this task, and wha
 
 | Scenario | Command or manual steps | Log file | What happened / what I changed |
 | --- | --- | --- | --- |
-| S01 — Simple Wi-Fi route | | | |
-| S02 — Case-insensitive password route | | | |
-| S03 — Unsupported request | | | |
-| S04 — Two topics before the graph change | | | |
-| S05 — Two topics after adding clarification | | | |
+| S01 — Simple Wi-Fi route | python part1.py | outputs/S01_part1.json | Selected wifi_help and returned GUIDE-WIFI. |
+| S02 — Case-insensitive password route | python part1.py | outputs/S02_part1.json | Selected password_help despite uppercase PASSWORD. |
+| S03 — Unsupported request | python part1.py | outputs/S03_part1.json | Selected other_help and asked which supported topic applies. |
+| S04 — Two topics before the graph change | python part1.py | outputs/S04_part1.json | Selected wifi_help because the Wi-Fi rule had priority. |
+| S05 — Two topics after adding clarification | python part1_clarify.py | outputs/S05_part1.json | Selected clarify_problem and asked which problem to solve first. |
 | S06 — Instructions then local ticket | | | |
 | S07 — The same request during a Wi-Fi outage | | | |
 | S08 — Status source unavailable | | | |

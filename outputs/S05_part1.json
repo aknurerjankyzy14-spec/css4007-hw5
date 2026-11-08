@@ -1,0 +1,46 @@
+{
+  "scenario_id": "S05",
+  "mode": "Part 1: no model",
+  "service_status_profile": "not used",
+  "user_id": "demo-user-a",
+  "thread_id": "part1-s05",
+  "initial_state": {
+    "message": "My Wi-Fi password does not work.",
+    "category": "",
+    "reply": ""
+  },
+  "route": [
+    "START",
+    "read_request",
+    "clarify_problem",
+    "END"
+  ],
+  "trace": [
+    {
+      "node": "read_request",
+      "update": {
+        "category": "both"
+      },
+      "state_after": {
+        "message": "My Wi-Fi password does not work.",
+        "category": "both",
+        "reply": ""
+      }
+    },
+    {
+      "node": "clarify_problem",
+      "update": {
+        "reply": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?"
+      },
+      "state_after": {
+        "message": "My Wi-Fi password does not work.",
+        "category": "both",
+        "reply": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?"
+      }
+    }
+  ],
+  "sources": [],
+  "final_response": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?",
+  "ticket_filename": null,
+  "loop_limit_reached": false
+}
