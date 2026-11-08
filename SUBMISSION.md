@@ -222,14 +222,51 @@ Further checks are needed to verify them.
 
 ## Part 3 — Memory
 
-TODO: explain conversation state, thread_id, user identifier, user preference storage, and retrieval from helpdesk.json.
+### Conversation memory
+
+I use LangGraph SqliteSaver to save conversation state in
+local-storage/conversations.sqlite.
+
+The state contains previous user messages, model replies and tool results.
+The checkpointer restores these messages after a process restart.
+The application sends only the new user message when continuing a thread.
+
+### User memory
+
+I store language preferences separately in local-storage/users.sqlite.
+The remember_language tool saves a preference explicitly requested
+by the user. Preferences are loaded using the application's user identifier.
+They are not hard-coded or loaded from demo_users.json.
+
+### User identifier and thread_id
+
+The user identifier selects a user's saved preference.
+The thread identifier selects a conversation.
+
+The checkpoint key combines the user identifier and thread identifier.
+This separates conversations between users and between threads.
+A new thread starts without the previous thread's messages,
+but the same user's language preference remains available.
+
+### Retrieval versus memory
+
+find_instructions retrieves reference information from data/helpdesk.json.
+These instructions are supplied knowledge, not a remembered conversation.
+
+The language preference is memory because it was learned from a user
+message and saved for later use.
+
+### Observed memory checks
 
 | Situation | Command used | Log file | What happened |
 | --- | --- | --- | --- |
-| Refer to an earlier message | | | |
-| Close, restart and resume | | | |
-| Same user, new conversation | | | |
-| Different user | | | |
+| Save preference and problem | python part3.py --user demo-user-a --thread restart-a --profile normal --log S11_before_restart_2.json | outputs/S11_before_restart_2.json | remember_language saved Kazakh. The conversation recorded the Wi-Fi problem and reported steps. |
+| Close, restart and resume | python part3.py --user demo-user-a --thread restart-a --profile normal --log S11_after_restart_2.json | outputs/S11_after_restart_2.json | Restored 6 previous messages and the Kazakh preference. Recalled enabling Wi-Fi and trying to reconnect. |
+| Same user, new conversation | python part3.py --user demo-user-a --thread preference-check-new --profile normal --log preference_new_thread.json | outputs/preference_new_thread.json | Previous message count was 0, but the saved language was Kazakh. |
+| Different user | python part3.py --user demo-user-b --thread isolation-check-new --profile normal --log isolation_new_user.json | outputs/isolation_new_user.json | Previous message count was 0 and saved language was null. No information from user A appeared. |
+
+These are development checks. The complete supplied scenario sequences
+with their required resets must still be run separately.
 
 ## Part 4 — Running and checking my work
 

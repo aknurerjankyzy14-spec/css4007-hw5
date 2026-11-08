@@ -1,0 +1,83 @@
+{
+  "provider": "OpenAI",
+  "model": "gpt-4.1-mini",
+  "user_id": "demo-user-a",
+  "thread_id": "restart-a",
+  "status_profile": "normal",
+  "turns": [
+    {
+      "user_message": "Which problem and steps did we discuss?",
+      "memory_read": {
+        "conversation_source": "LangGraph SQLite checkpoint",
+        "previous_message_count": 6,
+        "user_memory_source": "users.sqlite",
+        "saved_language": "Kazakh"
+      },
+      "trace": [
+        {
+          "node": "model",
+          "messages": [
+            {
+              "content": "Сіз Wi-Fi мәселесін айтып, оны қосып, қайта қосылуға тырысқаныңызды хабарладыңыз. Басқа нақты әрекеттер немесе қате хабарламалар туралы ақпарат бермедіңіз. Сондықтан, мәселе ретінде \"Wi-Fi қосылғанымен, қайта қосылу сәтсіз\" деп жазуға болады. Қолданылған қадамдар ретінде тек \"Wi-Fi қосылды және қайта қосылуға тырыстым\" деп жазамыз. Егер басқа әрекеттер болса, айтыңыз.",
+              "additional_kwargs": {
+                "refusal": null
+              },
+              "response_metadata": {
+                "token_usage": {
+                  "completion_tokens": 109,
+                  "prompt_tokens": 902,
+                  "total_tokens": 1011,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": 0,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": 0,
+                    "text_tokens": null
+                  },
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": null,
+                    "cached_tokens": 0,
+                    "image_tokens": null,
+                    "text_tokens": null
+                  }
+                },
+                "model_provider": "openai",
+                "model_name": "gpt-4.1-mini-2025-04-14",
+                "system_fingerprint": "fp_c2de8519c8",
+                "id": "chatcmpl-EhwcihJhsoousyFPhmf4eXiP6OzxT",
+                "service_tier": "default",
+                "finish_reason": "stop",
+                "logprobs": null
+              },
+              "type": "ai",
+              "name": null,
+              "id": "lc_run--01a1bb34-c3ea-7792-97af-9b0233f32982-0",
+              "tool_calls": [],
+              "invalid_tool_calls": [],
+              "usage_metadata": {
+                "input_tokens": 902,
+                "output_tokens": 109,
+                "total_tokens": 1011,
+                "input_token_details": {
+                  "audio": 0,
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "audio": 0,
+                  "reasoning": 0
+                }
+              }
+            }
+          ],
+          "state_updates": {
+            "model_calls": 1
+          }
+        }
+      ],
+      "language_after": "Kazakh",
+      "final_response": "Сіз Wi-Fi мәселесін айтып, оны қосып, қайта қосылуға тырысқаныңызды хабарладыңыз. Басқа нақты әрекеттер немесе қате хабарламалар туралы ақпарат бермедіңіз. Сондықтан, мәселе ретінде \"Wi-Fi қосылғанымен, қайта қосылу сәтсіз\" деп жазуға болады. Қолданылған қадамдар ретінде тек \"Wi-Fi қосылды және қайта қосылуға тырыстым\" деп жазамыз. Егер басқа әрекеттер болса, айтыңыз.",
+      "loop_limit_reached": false
+    }
+  ]
+}

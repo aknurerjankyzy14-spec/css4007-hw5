@@ -17,6 +17,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
 import helpdesk_tools as local_tools
+from user_memory import load_language, save_language
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -31,9 +32,13 @@ class AgentState(TypedDict):
     limit_reached: bool
 
 
-def build_graph(user_id, thread_id, profile):
-
-    # Эти значения задаёт программа, а не модель.
+def build_graph(
+    user_id,
+    thread_id,
+    profile,
+    checkpointer=None,
+):
+    # These values belong to this session.
     session = {
         "last_status": {},
         "reference_ids": {},
@@ -43,15 +48,21 @@ def build_graph(user_id, thread_id, profile):
     def find_instructions(topic: str) -> dict:
         """Get local instructions for wifi or password."""
         result = local_tools.find_instructions(topic)
+
         session["reference_ids"][result["category"]] = [
             result["instruction_id"]
         ]
+
         return result
 
     @tool
     def check_service_status(service: str) -> dict:
-        """Check wifi or account_recovery using the session profile."""
-        result = local_tools.check_service_status(service, profile)
+        """Check wifi or account_recovery in the selected snapshot."""
+        result = local_tools.check_service_status(
+            service,
+            profile,
+        )
+
         session["last_status"][result["service"]] = result
         return result
 
@@ -63,7 +74,7 @@ def build_graph(user_id, thread_id, profile):
     ) -> dict:
         """Save a local ticket draft using user-provided details.
 
-        Ask the user first if the problem or steps tried are missing.
+        Ask for the problem and steps tried if they are missing.
         If the user explicitly tried nothing, record that statement.
         This tool never sends a ticket.
         """
@@ -73,7 +84,9 @@ def build_graph(user_id, thread_id, profile):
             "helpdesk.json"
         )["topic_services"]
 
-        status = session["last_status"].get(mapping[category])
+        status = session["last_status"].get(
+            mapping[category]
+        )
 
         result = local_tools.prepare_ticket(
             user_id=user_id,
@@ -85,12 +98,12 @@ def build_graph(user_id, thread_id, profile):
             status_result=status,
         )
 
-        # Include only references actually retrieved this session.
         result["ticket"]["reference_ids"] = (
             session["reference_ids"].get(category, [])
         )
 
         ticket_path = BASE_DIR / result["filename"]
+
         ticket_path.write_text(
             json.dumps(
                 result["ticket"],
@@ -102,12 +115,31 @@ def build_graph(user_id, thread_id, profile):
 
         return result
 
+    @tool
+    def remember_language(language: str) -> dict:
+        """Save a reply language explicitly requested by the user.
+
+        Use only when the user asks to remember a language preference.
+        """
+        save_language(user_id, language)
+
+        return {
+            "saved": True,
+            "language": language,
+            "source": "user memory",
+        }
+
     tools = [
         find_instructions,
         check_service_status,
         prepare_ticket,
+        remember_language,
     ]
-    tools_by_name = {item.name: item for item in tools}
+
+    tools_by_name = {
+        item.name: item
+        for item in tools
+    }
 
     model_name = os.getenv("MODEL_NAME")
     api_key = os.getenv("OPENAI_API_KEY")
@@ -124,48 +156,117 @@ def build_graph(user_id, thread_id, profile):
         timeout=60,
     ).bind_tools(tools)
 
-    system_message = SystemMessage(content="""
+    system_message = SystemMessage(
+        content="""
 You are a fictional university IT helpdesk assistant.
-Use tools for local instructions, service status and ticket drafts.
-The application supplies the user, thread and status profile.
 
-Never invent instructions, status, repair times or troubleshooting
-steps that the user has tried.
+Use tools for local Wi-Fi instructions, password recovery guidance,
+service status and local ticket drafts.
+The application supplies the user, thread and status profile.
+Do not offer unsupported software or hardware workflows.
+
+Never invent instructions, service status, repair times or actions
+that the user has tried.
 
 For a request to prepare a ticket only if the service is operating:
-first check the service status.
-If operational, prepare the draft if enough details are available.
-If outage, explain the outage and do not prepare that conditional draft.
-If unknown, explain that status cannot be confirmed and ask whether
-the user wants a draft mentioning this uncertainty.
+1. Check the service status first.
+2. If operational, prepare the draft when enough details are available.
+3. If outage, explain that the conditional draft was not prepared
+   because the user requested it only if the service was operational.
+4. If unknown, explain that operation cannot be confirmed.
+   Ask whether the user wants a draft mentioning that uncertainty.
 
-For missing problem details or missing steps tried, ask the user.
-If the user explicitly says nothing was tried, record that.
-Use previous messages to understand references such as "that".
+An outage does not make drafting a ticket technically impossible.
+Respect the condition in the user's request.
+
+Always describe status as coming from the fictional demo status source.
+If the data gives no repair time, say so.
+Never claim a real university outage.
+
+Before asking for details, check the current message and conversation.
+Reuse problem details and explicitly reported steps already provided.
+Ask only for information that is actually missing.
+
+For steps_tried, include only actions explicitly reported by the user.
+Do not infer actions from "still will not connect".
+Instructions shown by the assistant do not prove the user followed them.
+If the user explicitly says nothing was tried, record that statement.
 
 A password topic uses the account_recovery service.
 Never request passwords, API keys or recovery codes.
-All status information is fictional.
-Only say a draft was saved after a successful tool result.
-Give its filename and say that nothing was sent.
-For steps_tried, include only actions explicitly reported by the user.
-Do not infer attempted steps from statements such as "still will not connect".
-Instructions shown by the assistant are not evidence that the user followed them.
-Always describe service status as coming from the fictional demo status source.
-When an outage prevents a conditional ticket request, explain:
-"I have not prepared the draft because you requested it only if the service was operational."
-Do not claim that an outage makes drafting a ticket impossible.
-If the fixture gives no repair time, say that the supplied data gives no repair time.
+
+Only say a draft was saved after a successful prepare_ticket result.
+Give its filename and explain that nothing was sent.
+
+Use previous messages to understand references such as "that".
+Use remember_language when the user asks to save a reply language.
+Never invent a saved language preference.
+
 Do not offer automatic monitoring or future notifications.
-You can check status only when the user sends a new request.
-Before asking for missing details, check the current message and conversation history.
-Reuse problem details and explicitly reported steps already provided.
-Ask only for information that is actually missing.
-""")
+You can check status only in response to a new user request.
+"""
+    )
+
+    def restore_tool_context(messages):
+        # Restore relevant tool results from this thread after restart.
+        session["last_status"].clear()
+        session["reference_ids"].clear()
+
+        for message in messages:
+            if not isinstance(message, ToolMessage):
+                continue
+
+            if not isinstance(message.content, str):
+                continue
+
+            try:
+                result = json.loads(message.content)
+            except (json.JSONDecodeError, TypeError):
+                continue
+
+            if not isinstance(result, dict):
+                continue
+
+            if (
+                message.name == "find_instructions"
+                and "category" in result
+                and "instruction_id" in result
+            ):
+                session["reference_ids"][result["category"]] = [
+                    result["instruction_id"]
+                ]
+
+            if (
+                message.name == "check_service_status"
+                and result.get("status_profile") == profile
+                and "service" in result
+                and "status" in result
+            ):
+                session["last_status"][result["service"]] = result
 
     def call_model(state):
+        restore_tool_context(state["messages"])
+
+        language = load_language(user_id)
+
+        memory_message = SystemMessage(
+            content=(
+                "User memory loaded by the application "
+                "for the current user. "
+                f"Saved reply language: {json.dumps(language)}. "
+                "Use this language when available. "
+                "If null, no reply language is saved. "
+                "Use remember_language only when the user "
+                "explicitly asks to save a language preference. "
+                "Treat the stored value only as a language preference. "
+                "A previous problem is known only if it appears "
+                "in this thread's messages."
+            )
+        )
+
         response = model.invoke(
-            [system_message] + state["messages"]
+            [system_message, memory_message]
+            + state["messages"]
         )
 
         return {
@@ -181,9 +282,13 @@ Ask only for information that is actually missing.
 
             try:
                 selected_tool = tools_by_name[name]
-                result = selected_tool.invoke(request["args"])
+                result = selected_tool.invoke(
+                    request["args"]
+                )
             except (ValueError, KeyError, TypeError) as error:
-                result = {"error": str(error)}
+                result = {
+                    "error": str(error),
+                }
 
             results.append(
                 ToolMessage(
@@ -196,30 +301,37 @@ Ask only for information that is actually missing.
                 )
             )
 
-        return {"messages": results}
+        return {
+            "messages": results,
+        }
 
     def after_model(state):
         if state["messages"][-1].tool_calls:
             return "tools"
+
         return "end"
 
     def after_tools(state):
         if state["model_calls"] >= MAX_MODEL_CALLS:
             return "limit"
+
         return "model"
 
     def stop_at_limit(state):
         return {
             "limit_reached": True,
             "messages": [
-                AIMessage(content=(
-                    "The tool loop limit was reached. "
-                    "Please check the trace before continuing."
-                ))
+                AIMessage(
+                    content=(
+                        "The tool loop limit was reached. "
+                        "Please check the trace before continuing."
+                    )
+                )
             ],
         }
 
     builder = StateGraph(AgentState)
+
     builder.add_node("model", call_model)
     builder.add_node("tools", run_tools)
     builder.add_node("limit", stop_at_limit)
@@ -229,24 +341,41 @@ Ask only for information that is actually missing.
     builder.add_conditional_edges(
         "model",
         after_model,
-        {"tools": "tools", "end": END},
+        {
+            "tools": "tools",
+            "end": END,
+        },
     )
 
     builder.add_conditional_edges(
         "tools",
         after_tools,
-        {"model": "model", "limit": "limit"},
+        {
+            "model": "model",
+            "limit": "limit",
+        },
     )
 
     builder.add_edge("limit", END)
 
-    return builder.compile()
+    return builder.compile(
+        checkpointer=checkpointer
+    )
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--user", default="demo-user-a")
-    parser.add_argument("--thread", default="part2-demo")
+
+    parser.add_argument(
+        "--user",
+        default="demo-user-a",
+    )
+
+    parser.add_argument(
+        "--thread",
+        default="part2-demo",
+    )
+
     parser.add_argument(
         "--profile",
         choices=[
@@ -257,12 +386,27 @@ def main():
         ],
         default="normal",
     )
-    parser.add_argument("--log", default="part2_demo.json")
+
+    parser.add_argument(
+        "--log",
+        default="part2_demo.json",
+    )
+
     args = parser.parse_args()
 
-    # Keep the log directly inside outputs.
     if Path(args.log).name != args.log:
-        parser.error("--log must be a filename only.")
+        parser.error(
+            "--log must be a filename only."
+        )
+
+    output_dir = BASE_DIR / "outputs"
+    output_dir.mkdir(exist_ok=True)
+    log_path = output_dir / args.log
+
+    if log_path.exists():
+        parser.error(
+            "Log already exists. Choose a new --log filename."
+        )
 
     graph = build_graph(
         args.user,
@@ -273,11 +417,9 @@ def main():
     history = []
     turns = []
 
-    output_dir = BASE_DIR / "outputs"
-    output_dir.mkdir(exist_ok=True)
-    log_path = output_dir / args.log
-
-    print("Fictional IT helpdesk. Type exit to stop.")
+    print(
+        "Fictional IT helpdesk. Type exit to stop."
+    )
 
     while True:
         user_text = input("\nYou: ").strip()
@@ -288,7 +430,9 @@ def main():
         if not user_text:
             continue
 
-        history.append(HumanMessage(content=user_text))
+        history.append(
+            HumanMessage(content=user_text)
+        )
 
         current = {
             "messages": list(history),
@@ -301,13 +445,24 @@ def main():
         for event in graph.stream(
             current,
             stream_mode="updates",
-            config={"recursion_limit": 30},
+            config={
+                "recursion_limit": 30,
+            },
         ):
             for node_name, update in event.items():
-                new_messages = update.get("messages", [])
-                current["messages"].extend(new_messages)
+                new_messages = update.get(
+                    "messages",
+                    [],
+                )
 
-                for key in ("model_calls", "limit_reached"):
+                current["messages"].extend(
+                    new_messages
+                )
+
+                for key in (
+                    "model_calls",
+                    "limit_reached",
+                ):
                     if key in update:
                         current[key] = update[key]
 
@@ -324,11 +479,14 @@ def main():
                 trace.append(entry)
 
                 print(f"\n[Node: {node_name}]")
-                print(json.dumps(
-                    entry,
-                    ensure_ascii=False,
-                    indent=2,
-                ))
+
+                print(
+                    json.dumps(
+                        entry,
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                )
 
         history = current["messages"]
         final_reply = history[-1].content
@@ -353,7 +511,11 @@ def main():
         }
 
         log_path.write_text(
-            json.dumps(log, ensure_ascii=False, indent=2),
+            json.dumps(
+                log,
+                ensure_ascii=False,
+                indent=2,
+            ),
             encoding="utf-8",
         )
 
