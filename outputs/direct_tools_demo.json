@@ -1,0 +1,120 @@
+{
+  "mode": "Direct tool calls without a model",
+  "calls": [
+    {
+      "tool": "find_instructions",
+      "arguments": {
+        "topic": "wifi"
+      },
+      "result": {
+        "category": "wifi",
+        "title": "Connect to the practice campus network",
+        "steps": [
+          "Check that Wi-Fi is enabled and airplane mode is off.",
+          "Select the fictional Campus-Demo network.",
+          "If connection fails, forget the saved network and try connecting again.",
+          "If the problem remains, check the service status before preparing a ticket."
+        ],
+        "instruction_id": "GUIDE-WIFI",
+        "source": "data/helpdesk.json"
+      }
+    },
+    {
+      "tool": "check_service_status",
+      "arguments": {
+        "service": "wifi",
+        "status_profile": "normal"
+      },
+      "result": {
+        "service": "wifi",
+        "status_profile": "normal",
+        "status": "operational",
+        "message": "The demo Wi-Fi service has no reported outage.",
+        "source": "data/service_status.json"
+      }
+    },
+    {
+      "tool": "check_service_status",
+      "arguments": {
+        "service": "wifi",
+        "status_profile": "wifi_outage"
+      },
+      "result": {
+        "service": "wifi",
+        "status_profile": "wifi_outage",
+        "status": "outage",
+        "message": "The demo Wi-Fi service is unavailable across campus. The fixture gives no repair time.",
+        "source": "data/service_status.json"
+      }
+    },
+    {
+      "tool": "check_service_status",
+      "arguments": {
+        "service": "wifi",
+        "status_profile": "status_unavailable"
+      },
+      "result": {
+        "service": "wifi",
+        "status_profile": "status_unavailable",
+        "status": "unknown",
+        "message": "The demo Wi-Fi status source is unavailable.",
+        "source": "data/service_status.json"
+      }
+    },
+    {
+      "tool": "check_service_status",
+      "arguments": {
+        "service": "password",
+        "status_profile": "recovery_outage"
+      },
+      "result": {
+        "service": "account_recovery",
+        "status_profile": "recovery_outage",
+        "status": "outage",
+        "message": "The demo account-recovery service is unavailable. The fixture gives no repair time.",
+        "source": "data/service_status.json"
+      }
+    },
+    {
+      "tool": "prepare_ticket",
+      "arguments": {
+        "user_id": "demo-user-a",
+        "thread_id": "direct-tools-demo",
+        "category": "wifi",
+        "summary": "Campus-Demo still will not connect.",
+        "steps_tried": [
+          "Enabled Wi-Fi.",
+          "Forgot the saved network."
+        ],
+        "status_profile": "normal",
+        "status_result": {
+          "service": "wifi",
+          "status_profile": "normal",
+          "status": "operational",
+          "message": "The demo Wi-Fi service has no reported outage.",
+          "source": "data/service_status.json"
+        }
+      },
+      "result": {
+        "ticket": {
+          "ticket_id": "DRAFT-d41a666bdc124b979584c39d774e66cd",
+          "status": "draft",
+          "user_id": "demo-user-a",
+          "thread_id": "direct-tools-demo",
+          "category": "wifi",
+          "summary": "Campus-Demo still will not connect.",
+          "steps_tried": [
+            "Enabled Wi-Fi.",
+            "Forgot the saved network."
+          ],
+          "service_status": "operational",
+          "status_profile": "normal",
+          "reference_ids": []
+        },
+        "filename": "outputs\\tickets\\DRAFT-d41a666bdc124b979584c39d774e66cd.json",
+        "sent": false,
+        "source": "data/ticket_template.json"
+      }
+    }
+  ]
+}
