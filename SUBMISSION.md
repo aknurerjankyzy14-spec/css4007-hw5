@@ -122,7 +122,103 @@ No language model is used in Part 1.
 
 ## Part 2 — Model and tools
 
-TODO: draw the model/tool loop. Answer the four questions in the brief. Record the model and provider, direct calls to each tool, and one actual run that uses multiple tools. Explain the loop limit.
+### Model and provider
+
+Provider: OpenAI.
+Configured model: gpt-4.1-mini.
+The actual runs reported gpt-4.1-mini-2025-04-14.
+
+### Model and tool loop
+
+```mermaid
+flowchart TD
+    START --> model
+    model -->|Tool calls present| tools
+    model -->|No tool calls| END
+    tools -->|Below call limit| model
+    tools -->|Call limit reached| limit
+    limit --> END
+```
+
+### 1. How does the graph choose tools or a final answer?
+
+after_model checks the latest AI message.
+If tool_calls is not empty, the graph runs the tools node.
+Otherwise, the graph ends with the model's answer.
+
+### 2. Who requests and executes tools?
+
+The model requests a tool by returning its name and arguments.
+The Python run_tools function executes the requested tool.
+The tool result is returned to the model as a ToolMessage.
+
+### 3. What changes in the state?
+
+The messages list stores user messages, model replies,
+tool requests and tool results.
+New messages are appended using the add reducer.
+model_calls counts model calls for the current user turn.
+limit_reached records whether the tool loop limit was reached.
+
+### 4. How is this different from Part 1?
+
+Part 1 uses fixed Python keyword rules.
+Part 2 lets the model select tools and arguments.
+The model receives tool results before deciding its next action.
+
+### Direct tool calls
+
+I called all three tools without a model using:
+
+python demo_tools.py
+
+The log is outputs/direct_tools_demo.json.
+The tools returned instructions, selected service-status snapshots
+and a local ticket draft.
+
+### Actual model runs
+
+| Profile | Log | Observed result |
+| --- | --- | --- |
+| normal | outputs/part2_normal.json | Retrieved GUIDE-WIFI, checked operational status, then prepared a local draft. |
+| wifi_outage | outputs/part2_outage.json | Checked Wi-Fi status and did not prepare the conditional draft. |
+| status_unavailable | outputs/part2_unknown.json | Received unknown status and asked whether to prepare a draft mentioning uncertainty. |
+| normal, missing details | outputs/part2_missing.json | Asked for details first, then checked status and prepared a draft after the user supplied them. |
+| recovery_outage | outputs/part2_recovery.json | Checked account_recovery, received outage and did not prepare the conditional draft. |
+
+The normal run used find_instructions in the first turn.
+In the second turn, it used check_service_status followed by
+prepare_ticket. The draft included GUIDE-WIFI as a reference.
+Nothing was sent to a real helpdesk.
+
+### Loop limit
+
+MAX_MODEL_CALLS is 6 per user turn.
+After tool execution, after_tools checks the model call count.
+At the limit, the graph runs the limit node instead of calling
+the model again. This node sets limit_reached to true and ends.
+A recursion_limit of 30 provides an additional graph execution limit.
+
+None of the demonstrated runs reached the loop limit.
+
+### Problems found during demonstrations
+
+The initial normal run inferred an extra reconnecting step.
+I strengthened the prompt to use only explicitly reported actions.
+
+The initial outage response incorrectly suggested that drafting
+was impossible during an outage. I clarified that the draft was
+not created because of the user's condition and repeated the run.
+
+The unknown-status response asked again for details already supplied.
+I added an instruction to check existing messages before asking.
+
+I also removed offers of automatic monitoring, because the program
+does not implement background status checks.
+
+These prompt changes do not guarantee perfect model behaviour.
+Further checks are needed to verify them.
+
 
 ## Part 3 — Memory
 
