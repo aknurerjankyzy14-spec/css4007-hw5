@@ -1,0 +1,46 @@
+{
+  "scenario_id": "S03",
+  "mode": "Part 1: no model",
+  "service_status_profile": "not used",
+  "user_id": "demo-user-a",
+  "thread_id": "part1-s03",
+  "initial_state": {
+    "message": "My laptop screen is broken.",
+    "category": "",
+    "reply": ""
+  },
+  "route": [
+    "START",
+    "read_request",
+    "other_help",
+    "END"
+  ],
+  "trace": [
+    {
+      "node": "read_request",
+      "update": {
+        "category": "other"
+      },
+      "state_after": {
+        "message": "My laptop screen is broken.",
+        "category": "other",
+        "reply": ""
+      }
+    },
+    {
+      "node": "other_help",
+      "update": {
+        "reply": "Is your problem about Wi-Fi or a password?"
+      },
+      "state_after": {
+        "message": "My laptop screen is broken.",
+        "category": "other",
+        "reply": "Is your problem about Wi-Fi or a password?"
+      }
+    }
+  ],
+  "sources": [],
+  "final_response": "Is your problem about Wi-Fi or a password?",
+  "ticket_filename": null,
+  "loop_limit_reached": false
+}
