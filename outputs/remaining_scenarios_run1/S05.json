@@ -1,0 +1,49 @@
+{
+  "scenario_id": "S05",
+  "title": "Two topics after adding clarification",
+  "status_profile": "normal",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s05",
+      "message": "My Wi-Fi password does not work."
+    }
+  ],
+  "runs": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s05",
+      "user_message": "My Wi-Fi password does not work.",
+      "trace": [
+        {
+          "node": "read_request",
+          "update": {
+            "category": "both"
+          },
+          "state_after": {
+            "message": "My Wi-Fi password does not work.",
+            "category": "both",
+            "reply": ""
+          }
+        },
+        {
+          "node": "clarify_problem",
+          "update": {
+            "reply": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?"
+          },
+          "state_after": {
+            "message": "My Wi-Fi password does not work.",
+            "category": "both",
+            "reply": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?"
+          }
+        }
+      ],
+      "final_response": "Which problem would you like to solve first: connecting to Wi-Fi or recovering your account password?",
+      "loop_limit_reached": false
+    }
+  ],
+  "execution_completed": true
+}

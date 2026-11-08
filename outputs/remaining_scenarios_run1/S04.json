@@ -1,0 +1,49 @@
+{
+  "scenario_id": "S04",
+  "title": "Two topics before the graph change",
+  "status_profile": "normal",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s04",
+      "message": "My Wi-Fi password does not work."
+    }
+  ],
+  "runs": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s04",
+      "user_message": "My Wi-Fi password does not work.",
+      "trace": [
+        {
+          "node": "read_request",
+          "update": {
+            "category": "wifi"
+          },
+          "state_after": {
+            "message": "My Wi-Fi password does not work.",
+            "category": "wifi",
+            "reply": ""
+          }
+        },
+        {
+          "node": "wifi_help",
+          "update": {
+            "reply": "Connect to the practice campus network\nInstruction ID: GUIDE-WIFI\n1. Check that Wi-Fi is enabled and airplane mode is off.\n2. Select the fictional Campus-Demo network.\n3. If connection fails, forget the saved network and try connecting again.\n4. If the problem remains, check the service status before preparing a ticket."
+          },
+          "state_after": {
+            "message": "My Wi-Fi password does not work.",
+            "category": "wifi",
+            "reply": "Connect to the practice campus network\nInstruction ID: GUIDE-WIFI\n1. Check that Wi-Fi is enabled and airplane mode is off.\n2. Select the fictional Campus-Demo network.\n3. If connection fails, forget the saved network and try connecting again.\n4. If the problem remains, check the service status before preparing a ticket."
+          }
+        }
+      ],
+      "final_response": "Connect to the practice campus network\nInstruction ID: GUIDE-WIFI\n1. Check that Wi-Fi is enabled and airplane mode is off.\n2. Select the fictional Campus-Demo network.\n3. If connection fails, forget the saved network and try connecting again.\n4. If the problem remains, check the service status before preparing a ticket.",
+      "loop_limit_reached": false
+    }
+  ],
+  "execution_completed": true
+}

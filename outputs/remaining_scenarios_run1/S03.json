@@ -1,0 +1,49 @@
+{
+  "scenario_id": "S03",
+  "title": "Unsupported request",
+  "status_profile": "normal",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s03",
+      "message": "My laptop screen is broken."
+    }
+  ],
+  "runs": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s03",
+      "user_message": "My laptop screen is broken.",
+      "trace": [
+        {
+          "node": "read_request",
+          "update": {
+            "category": "other"
+          },
+          "state_after": {
+            "message": "My laptop screen is broken.",
+            "category": "other",
+            "reply": ""
+          }
+        },
+        {
+          "node": "other_help",
+          "update": {
+            "reply": "Is your problem about Wi-Fi or a password?"
+          },
+          "state_after": {
+            "message": "My laptop screen is broken.",
+            "category": "other",
+            "reply": "Is your problem about Wi-Fi or a password?"
+          }
+        }
+      ],
+      "final_response": "Is your problem about Wi-Fi or a password?",
+      "loop_limit_reached": false
+    }
+  ],
+  "execution_completed": true
+}

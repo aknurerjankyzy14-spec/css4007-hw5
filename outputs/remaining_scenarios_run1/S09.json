@@ -1,0 +1,365 @@
+{
+  "scenario_id": "S09",
+  "title": "Missing ticket details",
+  "status_profile": "normal",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s09",
+      "message": "Prepare a support ticket."
+    },
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s09",
+      "message": "The issue is Wi-Fi. I enabled it and tried reconnecting, but it still fails."
+    }
+  ],
+  "launches": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s09",
+      "turns": [
+        {
+          "user_message": "Prepare a support ticket.",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 0,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "To prepare a support ticket, I need to know the category of the issue, a brief summary of the problem, and what steps you have already tried to resolve it. Could you please provide these details?",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 42,
+                      "prompt_tokens": 637,
+                      "total_tokens": 679,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-Ehwvr49U2jjY11Lqe3L1BPuaihkCC",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-dfb3-754f-87d0-c2bedb12cbfc-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 637,
+                    "output_tokens": 42,
+                    "total_tokens": 679,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "To prepare a support ticket, I need to know the category of the issue, a brief summary of the problem, and what steps you have already tried to resolve it. Could you please provide these details?",
+          "loop_limit_reached": false
+        },
+        {
+          "user_message": "The issue is Wi-Fi. I enabled it and tried reconnecting, but it still fails.",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 2,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 15,
+                      "prompt_tokens": 705,
+                      "total_tokens": 720,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-Ehwvsnwmu0E16LHcGkK5F4YWOmWvI",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-e507-757b-8f51-7c4c9b6f9914-0",
+                  "tool_calls": [
+                    {
+                      "name": "check_service_status",
+                      "args": {
+                        "service": "wifi"
+                      },
+                      "id": "call_F9qupH6equknEMnL86XurFba",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 705,
+                    "output_tokens": 15,
+                    "total_tokens": 720,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"service\": \"wifi\", \"status_profile\": \"normal\", \"status\": \"operational\", \"message\": \"The demo Wi-Fi service has no reported outage.\", \"source\": \"data/service_status.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "check_service_status",
+                  "id": null,
+                  "tool_call_id": "call_F9qupH6equknEMnL86XurFba",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 39,
+                      "prompt_tokens": 772,
+                      "total_tokens": 811,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvtOm6bjk85x1DQ1LQaruWAe2d0",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-e9d0-70f9-98f0-ebd4c55fd45a-0",
+                  "tool_calls": [
+                    {
+                      "name": "prepare_ticket",
+                      "args": {
+                        "category": "Wi-Fi",
+                        "summary": "Wi-Fi enabled but fails to connect.",
+                        "steps_tried": [
+                          "Enabled Wi-Fi",
+                          "Tried reconnecting"
+                        ]
+                      },
+                      "id": "call_c8avbSAOPMpX4sJi5XaLgEau",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 772,
+                    "output_tokens": 39,
+                    "total_tokens": 811,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 2
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"ticket\": {\"ticket_id\": \"DRAFT-0e85dfad18af43ddaa0c2f639e95a6d7\", \"status\": \"draft\", \"user_id\": \"demo-user-a\", \"thread_id\": \"s09\", \"category\": \"wifi\", \"summary\": \"Wi-Fi enabled but fails to connect.\", \"steps_tried\": [\"Enabled Wi-Fi\", \"Tried reconnecting\"], \"service_status\": \"operational\", \"status_profile\": \"normal\", \"reference_ids\": []}, \"filename\": \"outputs\\\\tickets\\\\DRAFT-0e85dfad18af43ddaa0c2f639e95a6d7.json\", \"sent\": false, \"source\": \"data/ticket_template.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "prepare_ticket",
+                  "id": null,
+                  "tool_call_id": "call_c8avbSAOPMpX4sJi5XaLgEau",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "I have prepared a draft support ticket for your Wi-Fi issue. The summary is \"Wi-Fi enabled but fails to connect,\" and you have tried enabling Wi-Fi and reconnecting. The ticket draft is saved as outputs\\tickets\\DRAFT-0e85dfad18af43ddaa0c2f639e95a6d7.json. Nothing has been sent yet. Would you like help with anything else?",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 87,
+                      "prompt_tokens": 979,
+                      "total_tokens": 1066,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvuIUnbnaF612lta90O5jPF9MTn",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-ed41-7147-a558-2392447fb0b1-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 979,
+                    "output_tokens": 87,
+                    "total_tokens": 1066,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 3
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "I have prepared a draft support ticket for your Wi-Fi issue. The summary is \"Wi-Fi enabled but fails to connect,\" and you have tried enabling Wi-Fi and reconnecting. The ticket draft is saved as outputs\\tickets\\DRAFT-0e85dfad18af43ddaa0c2f639e95a6d7.json. Nothing has been sent yet. Would you like help with anything else?",
+          "loop_limit_reached": false
+        }
+      ],
+      "launch_number": 1,
+      "process_command": [
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\run_scenarios.py",
+        "--worker"
+      ],
+      "input_messages": [
+        "Prepare a support ticket.",
+        "The issue is Wi-Fi. I enabled it and tried reconnecting, but it still fails."
+      ]
+    }
+  ],
+  "execution_completed": true
+}

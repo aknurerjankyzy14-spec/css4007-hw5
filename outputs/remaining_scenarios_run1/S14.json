@@ -1,0 +1,193 @@
+{
+  "scenario_id": "S14",
+  "title": "Password recovery outage",
+  "status_profile": "recovery_outage",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s14",
+      "message": "My password recovery page is unavailable. Check the service status. Is there a known problem?"
+    }
+  ],
+  "launches": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s14",
+      "turns": [
+        {
+          "user_message": "My password recovery page is unavailable. Check the service status. Is there a known problem?",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 0,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 17,
+                      "prompt_tokens": 650,
+                      "total_tokens": 667,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvyFbirIf81X8BtAoycVlfV97OX",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-fc60-7657-a133-33fdd2e2c1cc-0",
+                  "tool_calls": [
+                    {
+                      "name": "check_service_status",
+                      "args": {
+                        "service": "account_recovery"
+                      },
+                      "id": "call_RaiSpOxEIMTmH4va0GnLfJ5Q",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 650,
+                    "output_tokens": 17,
+                    "total_tokens": 667,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"service\": \"account_recovery\", \"status_profile\": \"recovery_outage\", \"status\": \"outage\", \"message\": \"The demo account-recovery service is unavailable. The fixture gives no repair time.\", \"source\": \"data/service_status.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "check_service_status",
+                  "id": null,
+                  "tool_call_id": "call_RaiSpOxEIMTmH4va0GnLfJ5Q",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "The password recovery service is currently experiencing an outage according to the demo status source. The service is unavailable, and there is no repair time provided in the status information. Because of this outage, the password recovery page being unavailable is a known problem right now. If you want, I can help you with instructions or other support options.",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 67,
+                      "prompt_tokens": 730,
+                      "total_tokens": 797,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-Ehwvzo9qzOEuz4aYz4Z9oKQQ9VteX",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb47-0051-7656-9e63-2b6c781b386e-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 730,
+                    "output_tokens": 67,
+                    "total_tokens": 797,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 2
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "The password recovery service is currently experiencing an outage according to the demo status source. The service is unavailable, and there is no repair time provided in the status information. Because of this outage, the password recovery page being unavailable is a known problem right now. If you want, I can help you with instructions or other support options.",
+          "loop_limit_reached": false
+        }
+      ],
+      "launch_number": 1,
+      "process_command": [
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\run_scenarios.py",
+        "--worker"
+      ],
+      "input_messages": [
+        "My password recovery page is unavailable. Check the service status. Is there a known problem?"
+      ]
+    }
+  ],
+  "execution_completed": true
+}

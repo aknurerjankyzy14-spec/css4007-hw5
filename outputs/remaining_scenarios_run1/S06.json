@@ -1,0 +1,451 @@
+{
+  "scenario_id": "S06",
+  "title": "Instructions then local ticket",
+  "status_profile": "normal",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s06",
+      "message": "Show me the Wi-Fi troubleshooting steps."
+    },
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s06",
+      "message": "I enabled Wi-Fi and forgot the saved network, but Campus-Demo still will not connect. Check whether Wi-Fi is down. If it is operating, prepare a ticket about this problem."
+    }
+  ],
+  "launches": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s06",
+      "turns": [
+        {
+          "user_message": "Show me the Wi-Fi troubleshooting steps.",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 0,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 15,
+                      "prompt_tokens": 640,
+                      "total_tokens": 655,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvVCi7TedRqaF6JGXFP0dPi41q9",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-8ad2-72d8-9e51-9b03d8d43cc3-0",
+                  "tool_calls": [
+                    {
+                      "name": "find_instructions",
+                      "args": {
+                        "topic": "wifi"
+                      },
+                      "id": "call_NlmFkdv8DgXfCq8KtCkKwLle",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 640,
+                    "output_tokens": 15,
+                    "total_tokens": 655,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"category\": \"wifi\", \"title\": \"Connect to the practice campus network\", \"steps\": [\"Check that Wi-Fi is enabled and airplane mode is off.\", \"Select the fictional Campus-Demo network.\", \"If connection fails, forget the saved network and try connecting again.\", \"If the problem remains, check the service status before preparing a ticket.\"], \"instruction_id\": \"GUIDE-WIFI\", \"source\": \"data/helpdesk.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "find_instructions",
+                  "id": null,
+                  "tool_call_id": "call_NlmFkdv8DgXfCq8KtCkKwLle",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "Here are the Wi-Fi troubleshooting steps for connecting to the practice campus network:\n\n1. Check that Wi-Fi is enabled and airplane mode is off.\n2. Select the fictional Campus-Demo network.\n3. If connection fails, forget the saved network and try connecting again.\n4. If the problem remains, check the service status before preparing a ticket.\n\nLet me know if you want help with checking the service status or anything else!",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 87,
+                      "prompt_tokens": 755,
+                      "total_tokens": 842,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvW17ZIbFancCHP1zbULMzdcB6t",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-9169-7668-8239-27d30f42621d-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 755,
+                    "output_tokens": 87,
+                    "total_tokens": 842,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 2
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "Here are the Wi-Fi troubleshooting steps for connecting to the practice campus network:\n\n1. Check that Wi-Fi is enabled and airplane mode is off.\n2. Select the fictional Campus-Demo network.\n3. If connection fails, forget the saved network and try connecting again.\n4. If the problem remains, check the service status before preparing a ticket.\n\nLet me know if you want help with checking the service status or anything else!",
+          "loop_limit_reached": false
+        },
+        {
+          "user_message": "I enabled Wi-Fi and forgot the saved network, but Campus-Demo still will not connect. Check whether Wi-Fi is down. If it is operating, prepare a ticket about this problem.",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 4,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 15,
+                      "prompt_tokens": 887,
+                      "total_tokens": 902,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvYC2Tgr5A2XUS9Ur49tnsVPBFM",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-960c-7754-a969-9cdba2bffccc-0",
+                  "tool_calls": [
+                    {
+                      "name": "check_service_status",
+                      "args": {
+                        "service": "wifi"
+                      },
+                      "id": "call_UwZfV1foUi6ToKgfB1f5n54B",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 887,
+                    "output_tokens": 15,
+                    "total_tokens": 902,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"service\": \"wifi\", \"status_profile\": \"normal\", \"status\": \"operational\", \"message\": \"The demo Wi-Fi service has no reported outage.\", \"source\": \"data/service_status.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "check_service_status",
+                  "id": null,
+                  "tool_call_id": "call_UwZfV1foUi6ToKgfB1f5n54B",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 50,
+                      "prompt_tokens": 954,
+                      "total_tokens": 1004,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvYWFTRGrNQt8BOjFPhrATWKnR1",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-99a3-7343-90e5-b2874217d451-0",
+                  "tool_calls": [
+                    {
+                      "name": "prepare_ticket",
+                      "args": {
+                        "category": "wifi",
+                        "summary": "Unable to connect to Campus-Demo Wi-Fi network despite enabling Wi-Fi and forgetting the saved network.",
+                        "steps_tried": [
+                          "Enabled Wi-Fi",
+                          "Forgot the saved network"
+                        ]
+                      },
+                      "id": "call_2aCHvnsF9Ofq9TuRaaxIXb0C",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 954,
+                    "output_tokens": 50,
+                    "total_tokens": 1004,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 2
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"ticket\": {\"ticket_id\": \"DRAFT-19642c3fa2e8428bb76d0bd4e4c01fd9\", \"status\": \"draft\", \"user_id\": \"demo-user-a\", \"thread_id\": \"s06\", \"category\": \"wifi\", \"summary\": \"Unable to connect to Campus-Demo Wi-Fi network despite enabling Wi-Fi and forgetting the saved network.\", \"steps_tried\": [\"Enabled Wi-Fi\", \"Forgot the saved network\"], \"service_status\": \"operational\", \"status_profile\": \"normal\", \"reference_ids\": [\"GUIDE-WIFI\"]}, \"filename\": \"outputs\\\\tickets\\\\DRAFT-19642c3fa2e8428bb76d0bd4e4c01fd9.json\", \"sent\": false, \"source\": \"data/ticket_template.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "prepare_ticket",
+                  "id": null,
+                  "tool_call_id": "call_2aCHvnsF9Ofq9TuRaaxIXb0C",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "The Wi-Fi service is currently operational according to the demo status source. I have prepared a ticket draft for your issue with connecting to the Campus-Demo network despite enabling Wi-Fi and forgetting the saved network.\n\nThe draft is saved as outputs\\tickets\\DRAFT-19642c3fa2e8428bb76d0bd4e4c01fd9.json and has not been sent.\n\nIf you need further assistance or want to add more details to the ticket, just let me know!",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 102,
+                      "prompt_tokens": 1189,
+                      "total_tokens": 1291,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvZj6zN0VWqi2hPBi1ZEZtWbwn7",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-9d43-7027-955e-b28a1202d5c5-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1189,
+                    "output_tokens": 102,
+                    "total_tokens": 1291,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 3
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "The Wi-Fi service is currently operational according to the demo status source. I have prepared a ticket draft for your issue with connecting to the Campus-Demo network despite enabling Wi-Fi and forgetting the saved network.\n\nThe draft is saved as outputs\\tickets\\DRAFT-19642c3fa2e8428bb76d0bd4e4c01fd9.json and has not been sent.\n\nIf you need further assistance or want to add more details to the ticket, just let me know!",
+          "loop_limit_reached": false
+        }
+      ],
+      "launch_number": 1,
+      "process_command": [
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\run_scenarios.py",
+        "--worker"
+      ],
+      "input_messages": [
+        "Show me the Wi-Fi troubleshooting steps.",
+        "I enabled Wi-Fi and forgot the saved network, but Campus-Demo still will not connect. Check whether Wi-Fi is down. If it is operating, prepare a ticket about this problem."
+      ]
+    }
+  ],
+  "execution_completed": true
+}

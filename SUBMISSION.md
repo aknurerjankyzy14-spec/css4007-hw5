@@ -4,9 +4,6 @@
 
 ### My graph and state
 
-## Part 1 — How the graph works
-
-### My graph and state
 
 ```mermaid
 flowchart TD
@@ -305,28 +302,83 @@ To reset all conversation and user memory, stop the application
 and delete these two database files.
 Do not delete data/ or the saved demonstration logs.
 
-The README setup and demonstration instructions still need
-to be completed.
-
+README.md contains installation, configuration, run commands,
+memory-reset instructions and testing instructions.
 ## Choices and limitations
 
-TODO: explain the storage and libraries I chose, why they fit this task, and what still does not work reliably.
+I chose LangGraph for explicit nodes, conditional routing and
+checkpointed conversation state.
+
+SQLite provides local persistent storage without a separate server.
+Conversation checkpoints and user preferences use separate databases.
+The application supplies user and thread identifiers; the model
+does not choose whose memory to load.
+
+The model provider is OpenAI. Real demonstrations require an API key
+and network access. Offline tests substitute labelled fake models.
+
+All reference information and service snapshots are fictional.
+Tickets are local drafts and are never sent.
+
+The model can still produce inaccurate wording. In S11, it did not
+clearly label the status as fictional in its first answer. In S12,
+it described capabilities beyond the implemented scope.
+Prompt instructions alone do not guarantee correct wording.
+
+User identifiers separate stored data in this exercise.
+They are not a real authentication system.
+
+Scenario memory is temporary and deleted after each scenario.
+The logs remain available. Interactive part3.py sessions use
+persistent storage in HELPDESK_STORAGE_DIR.
+
 
 ## Supplied scenarios — my actual results
 
-| Scenario | Command or manual steps | Log file | What happened / what I changed |
+Commands used:
+
+A:
+python run_scenarios.py --only S01 S02 S03 S04 S05 S06 S07 S08 S09 S14 --out outputs/remaining_scenarios_run1
+
+B:
+python run_scenarios.py --only S10 S11 S12 S13 --out outputs/memory_scenarios_run2
+
+C:
+python run_scenarios.py --only S13 --out outputs/isolation_scenario_retry1
+
+Each scenario started with fresh temporary memory.
+Memory was preserved between events within that scenario.
+Restart events used separate Python processes with the same storage.
+The supplied user messages were read from data/scenarios.json.
+
+| Scenario | Command | Log file | Actual result / possible improvement |
 | --- | --- | --- | --- |
-| S01 — Simple Wi-Fi route | python part1.py | outputs/S01_part1.json | Selected wifi_help and returned GUIDE-WIFI. |
-| S02 — Case-insensitive password route | python part1.py | outputs/S02_part1.json | Selected password_help despite uppercase PASSWORD. |
-| S03 — Unsupported request | python part1.py | outputs/S03_part1.json | Selected other_help and asked which supported topic applies. |
-| S04 — Two topics before the graph change | python part1.py | outputs/S04_part1.json | Selected wifi_help because the Wi-Fi rule had priority. |
-| S05 — Two topics after adding clarification | python part1_clarify.py | outputs/S05_part1.json | Selected clarify_problem and asked which problem to solve first. |
-| S06 — Instructions then local ticket | | | |
-| S07 — The same request during a Wi-Fi outage | | | |
-| S08 — Status source unavailable | | | |
-| S09 — Missing ticket details | | | |
-| S10 — Use the current conversation | | | |
-| S11 — Persist and recall after restart | | | |
-| S12 — Preference across threads without replay | | | |
-| S13 — Do not share memory between users | | | |
-| S14 — Password recovery outage | | | |
+| S01 — Simple Wi-Fi route | A | outputs/remaining_scenarios_run1/S01.json | read_request → wifi_help. Returned GUIDE-WIFI. |
+| S02 — Case-insensitive password route | A | outputs/remaining_scenarios_run1/S02.json | read_request → password_help. Uppercase PASSWORD was recognised. |
+| S03 — Unsupported request | A | outputs/remaining_scenarios_run1/S03.json | read_request → other_help. Asked whether the issue concerned Wi-Fi or a password. |
+| S04 — Two topics before the graph change | A | outputs/remaining_scenarios_run1/S04.json | Original graph selected wifi_help because the Wi-Fi rule was checked first. |
+| S05 — Two topics after adding clarification | A | outputs/remaining_scenarios_run1/S05.json | Changed graph selected clarify_problem and asked which problem to solve first. |
+| S06 — Instructions then local ticket | A | outputs/remaining_scenarios_run1/S06.json | Retrieved GUIDE-WIFI, checked operational status, then saved a draft. Included only enabling Wi-Fi and forgetting the saved network as steps tried. Nothing was sent. |
+| S07 — Request during a Wi-Fi outage | A | outputs/remaining_scenarios_run1/S07.json | Received outage. Did not create the conditional draft. Explained the user's condition and that no repair time was supplied. |
+| S08 — Status source unavailable | A | outputs/remaining_scenarios_run1/S08.json | Received unknown. Did not create a draft and asked whether the user wanted one mentioning uncertainty. |
+| S09 — Missing ticket details | A | outputs/remaining_scenarios_run1/S09.json | Asked for missing details first. After clarification, checked status and saved a draft using the reported actions. |
+| S10 — Use the current conversation | B | outputs/memory_scenarios_run2/S10.json | Recalled enabling Wi-Fi, forgetting the saved network and unsuccessful reconnecting. |
+| S11 — Recall after restart | B | outputs/memory_scenarios_run2/S11.json | Second process restored 6 messages and the Kazakh preference. Recalled the problem and steps. The first reply should identify the status more clearly as fictional demo data. |
+| S12 — Preference across threads | B | outputs/memory_scenarios_run2/S12.json | New thread had 0 previous messages but retained Kazakh. The response incorrectly mentioned broader software and hardware support; restrict the capability description. |
+| S13 — User isolation | C | outputs/isolation_scenario_retry1/S13.json | User A saved Kazakh. User B had 0 previous messages and no saved language or problem. |
+| S14 — Password recovery outage | A | outputs/remaining_scenarios_run1/S14.json | Checked account_recovery, received outage and reported no supplied repair time. No ticket was created. |
+
+No successful scenario run reached the loop limit.
+
+The first memory-scenario attempt failed because Windows could not
+encode Kazakh characters using cp1251. I configured standard streams
+to use UTF-8 and repeated the scenarios.
+
+In the second attempt, S13 failed because of a DNS connection error.
+The successful isolated retry is recorded under command C.
+The failed S13 log is retained as development evidence.
+
+Ticket drafts produced by the final runs:
+
+- S06: outputs/tickets/DRAFT-19642c3fa2e8428bb76d0bd4e4c01fd9.json
+- S09: outputs/tickets/DRAFT-0e85dfad18af43ddaa0c2f639e95a6d7.json

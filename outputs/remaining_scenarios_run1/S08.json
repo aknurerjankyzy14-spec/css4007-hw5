@@ -1,0 +1,193 @@
+{
+  "scenario_id": "S08",
+  "title": "Status source unavailable",
+  "status_profile": "status_unavailable",
+  "reset_before": true,
+  "memory_setup": "Fresh temporary storage for each scenario; preserved between launches within the scenario.",
+  "supplied_events": [
+    {
+      "action": "message",
+      "user_id": "demo-user-a",
+      "thread_id": "s08",
+      "message": "Check whether Wi-Fi is down. If it is operating, prepare a ticket. I already enabled Wi-Fi and reconnected, with no success."
+    }
+  ],
+  "launches": [
+    {
+      "user_id": "demo-user-a",
+      "thread_id": "s08",
+      "turns": [
+        {
+          "user_message": "Check whether Wi-Fi is down. If it is operating, prepare a ticket. I already enabled Wi-Fi and reconnected, with no success.",
+          "memory_read": {
+            "conversation_source": "LangGraph SQLite checkpoint",
+            "previous_message_count": 0,
+            "user_memory_source": "users.sqlite",
+            "saved_language": null
+          },
+          "trace": [
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 15,
+                      "prompt_tokens": 661,
+                      "total_tokens": 676,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvlxHEPiH6tsDTsqoEaZ00SFp4n",
+                    "service_tier": "default",
+                    "finish_reason": "tool_calls",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-ca0d-7712-bcae-362a8afd4690-0",
+                  "tool_calls": [
+                    {
+                      "name": "check_service_status",
+                      "args": {
+                        "service": "wifi"
+                      },
+                      "id": "call_jqQ0mwG8ckionC5kJRUpWNY9",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 661,
+                    "output_tokens": 15,
+                    "total_tokens": 676,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 1
+              }
+            },
+            {
+              "node": "tools",
+              "messages": [
+                {
+                  "content": "{\"service\": \"wifi\", \"status_profile\": \"status_unavailable\", \"status\": \"unknown\", \"message\": \"The demo Wi-Fi status source is unavailable.\", \"source\": \"data/service_status.json\"}",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "check_service_status",
+                  "id": null,
+                  "tool_call_id": "call_jqQ0mwG8ckionC5kJRUpWNY9",
+                  "artifact": null,
+                  "status": "success"
+                }
+              ],
+              "state_updates": {}
+            },
+            {
+              "node": "model",
+              "messages": [
+                {
+                  "content": "The current Wi-Fi service status is unknown because the demo Wi-Fi status source is unavailable. I cannot confirm whether the Wi-Fi is operating or down.\n\nWould you like me to prepare a ticket mentioning this uncertainty about the Wi-Fi service status? If yes, please confirm or provide any additional details you want included.",
+                  "additional_kwargs": {
+                    "refusal": null
+                  },
+                  "response_metadata": {
+                    "token_usage": {
+                      "completion_tokens": 63,
+                      "prompt_tokens": 728,
+                      "total_tokens": 791,
+                      "completion_tokens_details": {
+                        "accepted_prediction_tokens": 0,
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "rejected_prediction_tokens": 0,
+                        "text_tokens": null
+                      },
+                      "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cache_write_tokens": null,
+                        "cached_tokens": 0,
+                        "image_tokens": null,
+                        "text_tokens": null
+                      }
+                    },
+                    "model_provider": "openai",
+                    "model_name": "gpt-4.1-mini-2025-04-14",
+                    "system_fingerprint": "fp_c2de8519c8",
+                    "id": "chatcmpl-EhwvmUKubAZA0r1gFCovbaEJDvY0s",
+                    "service_tier": "default",
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1bb46-cefb-7573-9002-d1e2e06003d8-0",
+                  "tool_calls": [],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 728,
+                    "output_tokens": 63,
+                    "total_tokens": 791,
+                    "input_token_details": {
+                      "audio": 0,
+                      "cache_read": 0
+                    },
+                    "output_token_details": {
+                      "audio": 0,
+                      "reasoning": 0
+                    }
+                  }
+                }
+              ],
+              "state_updates": {
+                "model_calls": 2
+              }
+            }
+          ],
+          "saved_language_after": null,
+          "final_response": "The current Wi-Fi service status is unknown because the demo Wi-Fi status source is unavailable. I cannot confirm whether the Wi-Fi is operating or down.\n\nWould you like me to prepare a ticket mentioning this uncertainty about the Wi-Fi service status? If yes, please confirm or provide any additional details you want included.",
+          "loop_limit_reached": false
+        }
+      ],
+      "launch_number": 1,
+      "process_command": [
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\Admin\\PycharmProjects\\css4007-hw5\\run_scenarios.py",
+        "--worker"
+      ],
+      "input_messages": [
+        "Check whether Wi-Fi is down. If it is operating, prepare a ticket. I already enabled Wi-Fi and reconnected, with no success."
+      ]
+    }
+  ],
+  "execution_completed": true
+}
