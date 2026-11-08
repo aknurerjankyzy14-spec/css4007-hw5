@@ -29,9 +29,9 @@ The nodes read and update these fields:
 | Node | Reads | Updates |
 | --- | --- | --- |
 | read_request | message | category |
-| wifi_help | category and the Wi-Fi guide in data/helpdesk.json | reply |
-| password_help | category and the password guide in data/helpdesk.json | reply |
-| other_help | category | reply |
+| wifi_help | Wi-Fi guide in data/helpdesk.json; no state fields | reply |
+| password_help | Password guide in data/helpdesk.json; no state fields | reply |
+| other_help | No state fields; returns a fixed question | reply |
 
 The original message stays in the state.
 
